@@ -19,30 +19,30 @@ cpar.restype = None
 cpar.argtypes = [c_double,c_double,array_1d_double,array_1d_double]
 
 parnames = [
-    'Egg mortality',
-    'Larva mortality',
-    'Pupa mortality',
-    'Adult mortality',
-    'Egg dev. time (mean, days)',
-    'Egg dev. time (std, days)',
-    'Larva dev. time (mean, days)',
-    'Larva dev. time (std, days)',
-    'Pupa dev. time (mean, days)',
-    'Pupa dev. time (std, days)',
-    'Impact of photoperiod'
+    'Egg mortality ($p_m$)',
+    'Larva mortality ($p_m$)',
+    'Pupa mortality ($p_m$)',
+    'Adult mortality ($p_m$)',
+    'Egg dev. time ($\mu$, days)',
+    'Egg dev. time ($\sigma$, days)',
+    'Larva dev. time ($\mu$, days)',
+    'Larva dev. time ($\sigma$, days)',
+    'Pupa dev. time ($\mu$, days)',
+    'Pupa dev. time ($\sigma$, days)',
+    'Impact of photoperiod ($\phi$)'
 ]
 parnamesC = [
-    'Daily mortality',
-    'Daily mortality',
-    'Daily mortality',
-    'Daily mortality',
-    'Dev. time (mean, days)',
-    'Dev. time (std, days)',
-    'Dev. time (mean, days)',
-    'Dev. time (std, days)',
-    'Dev. time (mean, days)',
-    'Dev. time (std, days)',
-    'Impact of photoperiod'
+    'Daily mortality ($p_m$)',
+    'Daily mortality ($p_m$)',
+    'Daily mortality ($p_m$)',
+    'Daily mortality ($p_m$)',
+    'Dev. time ($\mu$, days)',
+    'Dev. time ($\sigma$, days)',
+    'Dev. time ($\mu$, days)',
+    'Dev. time ($\sigma$, days)',
+    'Dev. time ($\mu$, days)',
+    'Dev. time ($\sigma$, days)',
+    'Impact of photoperiod ($\phi$)'
 ]
 namesC = [
     'Egg',
@@ -55,11 +55,11 @@ namesC = [
     'Larva',
     'Pupa',
     'Pupa',
-    'Impact of photoperiod'
+    'Impact of photoperiod ($\phi$)'
 ]
 clscl = ['black',
          '#004488',
-         '#ee3377',#'#cc3311',
+         '#ee3377',
          'yellow',
          'black',
          'black',
@@ -200,6 +200,7 @@ def getPD(xr,ph,param):
 
 def plotPD(params,labels=[],ylog=False,filename="",filetype="png"):
     import matplotlib.pyplot as plt
+    plt.rcParams.update({'text.usetex': True})
     #
     xr = numpy.arange(-5,50,0.1)
     ph = numpy.repeat(24.0,len(xr))
@@ -241,6 +242,7 @@ def plotPD(params,labels=[],ylog=False,filename="",filetype="png"):
 
 def plotPDC(parmat,labels=[],ylog=False,subset=False,ylim=[],filename="",filetype="png"):
     from matplotlib import pyplot as plt
+    plt.rcParams.update({'text.usetex': True})
     plt.rcParams.update({'font.size': 14})
     #
     xr = numpy.arange(-5,50,0.1)
@@ -329,6 +331,7 @@ def matchSim(b,pr):
 
 def plotMatches(obs,prs,dates=False,legend=True,filename="",filetype="png",plot=True,fig=False,ax1=False,ax2=False):
     import matplotlib.pyplot as plt
+    plt.rcParams.update({'text.usetex': True})
     if not (fig and ax1 and ax2):
         fig, ax2 = plt.subplots()
         ax1 = ax2.twinx()
