@@ -329,22 +329,34 @@ def matchSim(b,pr):
     matchSim_ss = ss
     return sm, ss
 
-def plotMatches(obs,prs,dates=False,legend=True,filename="",filetype="png",plot=True,fig=False,ax1=False,ax2=False):
+def plotMatches(obs,prs,dates=False,legend=True,filename="",filetype="png",envir=False,plot=True,fig=False,ax1=False,ax2=False):
     import matplotlib.pyplot as plt
     plt.rcParams.update({'text.usetex': True})
+    plt.rcParams.update({'font.size': 14})
     if not (fig and ax1 and ax2):
-        fig, ax2 = plt.subplots()
-        ax1 = ax2.twinx()
+        fig, ax1 = plt.subplots()
+        if envir:
+            ax2 = ax1.twinx()
+            ax1.set_zorder(ax2.get_zorder()+1)
+            ax1.set_frame_on(False)
+    envir_labels = True
     labels = True
     for i in range(len(obs)):
         o = obs[i]
         if not 'temp' in o:
             continue
-        tm = numpy.arange(len(o['temp']))/TSCALE
-        if dates and 'Date' in o:
-            tm = numpy.array([o['Date'][0]+timedelta(days=t) for t in tm])
-        ax2.plot(tm,o['temp'],color="#377eb8",alpha=0.75,lw=2,label="Temperature")
-        ax2.plot(tm,o['photo'],color="#e41a1c",alpha=0.75,lw=2,label="Photoperiod")
+        if envir:
+            tm = numpy.arange(len(o['temp']))/TSCALE
+            if dates and 'Date' in o:
+                tm = numpy.array([o['Date'][0]+timedelta(days=t) for t in tm])
+            labt = None
+            labp = None
+            if envir_labels:
+                labt = "Temperature"
+                labp = "Photoperiod"
+            ax2.plot(tm,o['temp'],color="silver",lw=2,label=labt)
+            ax2.plot(tm,o['photo'],color="silver",ls="dashed",lw=4,label=labp)
+            envir_labels = False
         #
         if len(prs) > 0:
             sms = []; sss = []
@@ -361,9 +373,9 @@ def plotMatches(obs,prs,dates=False,legend=True,filename="",filetype="png",plot=
             labo = None
             lab = None
             if labels:
-                labo = spc_names[spc] + " " + ("(produced)" if o['type'][0]=='C' else "(surviving)")
-                lab = spc_names[spc] + " " + "(simulation)"
-            ax1.plot(o['Date'] if dates and 'Date' in o else o['days'],o[spc],'o',c=colours[spc],label=labo)
+                labo = "Observed "+spc_names[spc]
+                lab = "Simulated "+spc_names[spc]
+            ax1.plot(o['Date'] if dates and 'Date' in o else o['days'],o[spc],marker='o',linestyle='dashed',c=colours[spc],label=labo)
             if len(prs) > 0:
                 n = numpy.where(species==spc)[0][0]
                 if o['type'][0] == 'C':
@@ -377,11 +389,15 @@ def plotMatches(obs,prs,dates=False,legend=True,filename="",filetype="png",plot=
         #
         labels = False
     fig.tight_layout()
-    ax2.set_ylabel("Temperature (°C) and Photoperiod (hrs)")
+    ax1.set_ylabel("Number of each stage")
+    if envir:
+        ax2.set_ylabel("Temperature (°C) and Photoperiod (hrs)")
     if legend:
-        ax1.legend()
+        ax1.legend(loc='upper left')
+        if envir:
+            ax2.legend(loc='upper right')
     if dates:
-        for tick in ax2.get_xticklabels():
+        for tick in ax1.get_xticklabels():
             tick.set_rotation(30)
     if not (dates and 'Date' in o):
         ax1.set_xlabel("Time (days)")
@@ -389,7 +405,10 @@ def plotMatches(obs,prs,dates=False,legend=True,filename="",filetype="png",plot=
         if filename:
             plt.savefig(filename+"."+filetype,bbox_inches="tight",dpi=300)
         plt.show()
-    return fig, ax1, ax2
+    if envir:
+        return fig, ax1, ax2
+    else:
+        return fig, ax1
 
 def getScores(obs):
     def score(pr,verbose=False):
