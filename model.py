@@ -18,6 +18,8 @@ cpar = model.getPD
 cpar.restype = None
 cpar.argtypes = [c_double,c_double,array_1d_double,array_1d_double]
 
+prange = [5,50,95]
+
 parnames = [
     'Egg mortality ($p_m$)',
     'Larva mortality ($p_m$)',
@@ -204,7 +206,7 @@ def plotPD(params,labels=[],ylog=False,filename="",filetype="png"):
     #
     xr = numpy.arange(-5,50,0.1)
     ph = numpy.repeat(24.0,len(xr))
-    pps = [numpy.percentile(numpy.array([getPD(xr,ph,rescalepar(pr)) for pr in param]),[5,50,95],axis=0) for param in params]
+    pps = [numpy.percentile(numpy.array([getPD(xr,ph,rescalepar(pr)) for pr in param]),prange,axis=0) for param in params]
     for n in range(10):
         if ylog:
             if n in [0,1,2,3]:
@@ -226,7 +228,7 @@ def plotPD(params,labels=[],ylog=False,filename="",filetype="png"):
     #
     ph = numpy.arange(0,24,0.1)
     xr = numpy.repeat(25.0,len(ph))
-    pps = [numpy.percentile(numpy.array([getPD(xr,ph,rescalepar(pr)) for pr in param]),[5,50,95],axis=0) for param in params]
+    pps = [numpy.percentile(numpy.array([getPD(xr,ph,rescalepar(pr)) for pr in param]),prange,axis=0) for param in params]
     n = 10
     for i in range(len(pps)):
         pp = pps[i]
@@ -247,7 +249,7 @@ def plotPDC(parmat,labels=[],ylog=False,subset=False,ylim=[],filename="",filetyp
     #
     xr = numpy.arange(-5,50,0.1)
     ph = numpy.repeat(24.0,len(xr))
-    pp = numpy.percentile(numpy.array([getPD(xr,ph,rescalepar(pr)) for pr in parmat]),[5,50,95],axis=0)
+    pp = numpy.percentile(numpy.array([getPD(xr,ph,rescalepar(pr)) for pr in parmat]),prange,axis=0)
     sset = [0,1,2,3,-1, 4,6,8,-2, 5,7,9,-3] if not subset else [1,2,-1, 6,8,-2, 7,9,-3]
     for n in sset:
         if n in [-1,-2,-3]:
@@ -275,7 +277,7 @@ def plotPDC(parmat,labels=[],ylog=False,subset=False,ylim=[],filename="",filetyp
     #
     ph = numpy.arange(0,24,0.1)
     xr = numpy.repeat(25.0,len(ph))
-    pp = numpy.percentile(numpy.array([getPD(xr,ph,rescalepar(pr)) for pr in parmat]),[5,50,95],axis=0)
+    pp = numpy.percentile(numpy.array([getPD(xr,ph,rescalepar(pr)) for pr in parmat]),prange,axis=0)
     n = 10
     plt.fill_between(ph,pp[0][:,n],pp[2][:,n],color=clscl[n],alpha=0.5)
     plt.plot(ph,pp[1][:,n],color=clscl[n],label=None)
@@ -379,9 +381,9 @@ def plotMatches(obs,prs,dates=False,legend=True,filename="",filetype="png",envir
             if len(prs) > 0:
                 n = numpy.where(species==spc)[0][0]
                 if o['type'][0] == 'C':
-                    cvec = numpy.percentile(sss[:,:,n],[0,50,100],axis=0)
+                    cvec = numpy.percentile(sss[:,:,n],prange,axis=0)
                 elif o['type'][0] == 'A':
-                    cvec = numpy.percentile(sms[:,:,n],[0,50,100],axis=0)
+                    cvec = numpy.percentile(sms[:,:,n],prange,axis=0)
                 else:
                     print("Wrong type",o['type'])
                 ax1.fill_between(tm,cvec[0],cvec[2],color=colours[spc],alpha=0.1)

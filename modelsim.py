@@ -7,6 +7,8 @@ from matplotlib import pylab as plt
 import pandas
 import random
 
+prange = [5,50,95]
+
 def ifin(vec,pick):
     return numpy.sum([vec==p for p in pick],axis=0)>0
 
@@ -116,7 +118,7 @@ def calcEmergencePP(dy, aaa):
 def calcRet(ret):
     # tm = numpy.array([a.to_pydatetime() for a in ret[0,:,0]])
     tm = numpy.array(ret[0,:,0])
-    pp = numpy.nanpercentile(numpy.array(ret[:,:,1:],dtype=numpy.float64),[5,50,95],axis=0)
+    pp = numpy.nanpercentile(numpy.array(ret[:,:,1:],dtype=numpy.float64),prange,axis=0)
     c = calcEmergence(tm, numpy.array(ret[:,:,2]))
     xr = numpy.array([numpy.min(c)+timedelta(days=i) for i in range((numpy.max(c)-numpy.min(c)).days)])
     yr = {}
@@ -126,7 +128,7 @@ def calcRet(ret):
             if key not in yr:
                 yr[key] = []
             yr[key].append(ret[i,j,2])
-    yr = numpy.array([numpy.hstack([key]+[numpy.nanpercentile(numpy.array(yr[key],dtype=numpy.float64),[5,50,95],axis=0)]) for key in sorted(yr)])
+    yr = numpy.array([numpy.hstack([key]+[numpy.nanpercentile(numpy.array(yr[key],dtype=numpy.float64),prange,axis=0)]) for key in sorted(yr)])
     m = numpy.array([numpy.nanmin(c[i][~numpy.isnan(numpy.array(ret[i,:,2],dtype=numpy.float64))]) for i in range(ret[:,:,2].shape[0])])
     return tm, pp, m
 
@@ -178,11 +180,11 @@ def plotProfile(dy, matD, matP, lon,lat, show=True):
     #
     aa = matD[(matD[:,2]==lon) & (matD[:,3]==lat),:]
     print(aa.shape)
-    aaa = numpy.nanpercentile(aa[:,4:],[5,50,95],axis=0)
+    aaa = numpy.nanpercentile(aa[:,4:],prange,axis=0)
     #
     bb = matP[(matP[:,2]==lon) & (matP[:,3]==lat),:]
     print(bb.shape)
-    bbb = numpy.nanpercentile(bb[:,4:],[5,50,95],axis=0)
+    bbb = numpy.nanpercentile(bb[:,4:],prange,axis=0)
     #
     c = calcEmergencePP(dy, aaa)
     #
