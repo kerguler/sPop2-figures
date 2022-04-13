@@ -266,10 +266,9 @@ def plotPDC(parmat,labels=[],ylog=False,subset=False,ylim=[],filename="",filetyp
             plt.yscale("linear")
             continue
         if ylog:
-            if n in [0,1,2,3]:
-                  plt.yscale("log")
-            else:
-                  plt.yscale("linear")
+            plt.yscale("log")
+            locs, labels = plt.yticks()
+            plt.yticks(locs, ["%g" %l for l in locs])
         plt.fill_between(xr,pp[0][:,n],pp[2][:,n],color=clscl[n],alpha=0.5)
         plt.plot(xr,pp[1][:,n],color=clscl[n],label=namesC[n])
         plt.ylabel(parnamesC[n],fontsize=14)
