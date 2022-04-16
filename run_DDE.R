@@ -55,9 +55,9 @@ solveDDE <- function(R1, R2) {
                       "size"=out[,2]))
 }
 
-outS <- solveDDE(40,40) # 20+5
+outS <- solveDDE(40,40) # 20+-5
 outM <- solveDDE(60,40)
-outL <- solveDDE(60,60) # 40+5
+outL <- solveDDE(60,60) # 40+-5
 
 out <- data.frame("time"=outM$time,
                   "sizeS"=outS$size,
