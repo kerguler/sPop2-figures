@@ -243,6 +243,7 @@ def plotPD(params,labels=[],ylog=False,filename="",filetype="png"):
     plt.show()
 
 def plotPDC(parmat,labels=[],ylog=False,subset=False,ylim=[],filename="",filetype="png"):
+    import matplotlib
     from matplotlib import pyplot as plt
     plt.rcParams.update({'text.usetex': True})
     plt.rcParams.update({'font.size': 14})
@@ -267,8 +268,9 @@ def plotPDC(parmat,labels=[],ylog=False,subset=False,ylim=[],filename="",filetyp
             continue
         if ylog:
             plt.yscale("log")
-            locs, labels = plt.yticks()
+            locs = [0.1, 0.5, 1, 5, 10, 50, 100]
             plt.yticks(locs, ["%g" %l for l in locs])
+            # matplotlib.axis.Axis Axes.axes  (matplotlib.ticker.ScalarFormatter())
         plt.fill_between(xr,pp[0][:,n],pp[2][:,n],color=clscl[n],alpha=0.5)
         plt.plot(xr,pp[1][:,n],color=clscl[n],label=namesC[n])
         plt.ylabel(parnamesC[n],fontsize=14)
