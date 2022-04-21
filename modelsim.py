@@ -1,7 +1,7 @@
 TSCALE = 4
 import numpy
 from matplotlib.pyplot import clim
-from model import sim, getInit
+from model import sim, getInit, matchSim
 from datetime import datetime, timedelta, date
 from matplotlib import pylab as plt
 import pandas
@@ -44,6 +44,29 @@ def simClims(clims,param=[],funpar=None,init=[100,0,0,0],thr=0):
                 ret.append([i,clim['days'][ii],po,numpy.nan])
             else:
                 ret.append([i,clim['days'][ii],po,(numpy.where(A>(0.5*po))[0][0]-1)/TSCALE])
+    return ret
+
+def simObs(obs,param):
+    ret = []
+    if not 'temp' in obs:
+        return None
+    #
+    tm = numpy.arange(len(obs['temp']))/TSCALE
+    if 'Date' in obs:
+        tm = numpy.array([obs['Date'][0]+timedelta(days=t) for t in tm])
+    #
+    for pr in param:
+        sm, ss = matchSim(obs,pr)
+        A = numpy.cumsum(sm[:,7])
+        po = A[-1]
+        s = obs['E'][0]
+        if numpy.isnan(s):
+            s = obs['L'][0]
+        if po < 0.5 or not numpy.any(A>(0.5*po)):
+            ret.append([tm[0],100.0*po/s,numpy.nan])
+        else:
+            ret.append([tm[0],100.0*po/s,(numpy.where(A>(0.5*po))[0][0]-1)/TSCALE])
+    #
     return ret
 
 print_date = True
@@ -131,6 +154,25 @@ def calcRet(ret):
     yr = numpy.array([numpy.hstack([key]+[numpy.nanpercentile(numpy.array(yr[key],dtype=numpy.float64),prange,axis=0)]) for key in sorted(yr)])
     m = numpy.array([numpy.nanmin(c[i][~numpy.isnan(numpy.array(ret[i,:,2],dtype=numpy.float64))]) for i in range(ret[:,:,2].shape[0])])
     return tm, pp, m
+
+def calcObs(o):
+    if numpy.any(o['A'][1:]<o['A'][:-1]):
+        print("Error:",o['A'])
+        return None
+    d = {
+        'Date': o['Date'][0]
+    }
+    if numpy.all(o['A']==0):
+        d['A'] = numpy.nan
+        d['lA'] = numpy.nan
+    else:
+        j = numpy.where(o['A']>o['A'][-1]*0.5)[0][0]
+        s = o['E'][0]
+        if numpy.isnan(s):
+            s = o['L'][0]
+        d['A'] = 100.0*o['A'][-1]/s
+        d['lA'] = (o['Date'][j]-o['Date'][0]).days
+    return d
 
 def filterGlobal(prd, dev):
     if not numpy.all(prd[:,:4]==dev[:,:4]):

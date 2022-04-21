@@ -49,8 +49,7 @@ photo = numpy.array([daylength(lat,d.timetuple().tm_yday+(d.timetuple().tm_hour/
 # -------------------------------------------------------------------------------
 
 import pandas
-# ../data/vtemp/larve Cxpipiens_Petrovaradin_2017_V2_table.csv
-dat = pandas.read_csv("data/vtemp/larve Cxpipiens_Petrovaradin_2017_V2_table.csv")
+dat = pandas.read_csv("data/vtemp/data_vtemp.csv")
 obs = {}
 for index, row in dat.iterrows():
     if not (row[0] in obs):
@@ -77,3 +76,24 @@ for r in obs:
     obs[r]['days'] = numpy.array([(d-obs[r]['Date'][0]).days for d in obs[r]['Date']])
     obs[r]['temp'] = temp['Tmean'][(temp['Date']>=obs[r]['Date'][0]) & (temp['Date']<=obs[r]['Date'][-1])]
     obs[r]['photo'] = photo[(temp['Date']>=obs[r]['Date'][0]) & (temp['Date']<=obs[r]['Date'][-1])]
+
+# Simulation time extended one month following the last data collection
+obs_extend = {}
+for r in obs:
+    obs_extend[r] = {}
+    obs_extend[r]['Date'] = numpy.array(obs[r]['Date']).copy()
+    obs_extend[r]['E'] = numpy.array(obs[r]['E']).copy()
+    obs_extend[r]['L'] = numpy.array(obs[r]['L']).copy()
+    obs_extend[r]['P'] = numpy.array(obs[r]['P']).copy()
+    obs_extend[r]['A'] = numpy.array(obs[r]['A']).copy()
+    #
+    for i in range(30):
+        obs_extend[r]['Date'] = numpy.hstack([obs_extend[r]['Date'], obs_extend[r]['Date'][-1]+timedelta(days=1)])
+        obs_extend[r]['E'] = numpy.hstack([obs_extend[r]['E'], numpy.nan])
+        obs_extend[r]['L'] = numpy.hstack([obs_extend[r]['L'], numpy.nan])
+        obs_extend[r]['P'] = numpy.hstack([obs_extend[r]['P'], numpy.nan])
+        obs_extend[r]['A'] = numpy.hstack([obs_extend[r]['A'], numpy.nan])
+    #
+    obs_extend[r]['days'] = numpy.array([(d-obs_extend[r]['Date'][0]).days for d in obs_extend[r]['Date']])
+    obs_extend[r]['temp'] = temp['Tmean'][(temp['Date']>=obs_extend[r]['Date'][0]) & (temp['Date']<=obs_extend[r]['Date'][-1])]
+    obs_extend[r]['photo'] = photo[(temp['Date']>=obs_extend[r]['Date'][0]) & (temp['Date']<=obs_extend[r]['Date'][-1])]
