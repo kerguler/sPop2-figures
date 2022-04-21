@@ -46,7 +46,7 @@ def simClims(clims,param=[],funpar=None,init=[100,0,0,0],thr=0):
                 ret.append([i,clim['days'][ii],po,(numpy.where(A>(0.5*po))[0][0]-1)/TSCALE])
     return ret
 
-def simObs(obs,param):
+def simObs(obs,param,fresh=True):
     ret = []
     if not 'temp' in obs:
         return None
@@ -56,7 +56,7 @@ def simObs(obs,param):
         tm = numpy.array([obs['Date'][0]+timedelta(days=t) for t in tm])
     #
     for pr in param:
-        sm, ss = matchSim(obs,pr)
+        sm, ss = matchSim(obs,pr,fresh=fresh)
         A = numpy.cumsum(sm[:,7])
         po = A[-1]
         s = obs['E'][0]

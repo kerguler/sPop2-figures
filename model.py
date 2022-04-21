@@ -310,7 +310,7 @@ def getInit(b):
 matchSim_key = ["","",""]
 matchSim_sm = None
 matchSim_ss = None
-def matchSim(b,pr):
+def matchSim(b,pr,fresh=False):
     global matchSim_key
     global matchSim_sm
     global matchSim_ss
@@ -320,7 +320,7 @@ def matchSim(b,pr):
     init = getInit(b)
     #
     strings = [str(tt),str(pr),str(init)]
-    if numpy.all(strings==matchSim_key):
+    if (not fresh) and numpy.all(strings==matchSim_key):
         return matchSim_sm, matchSim_ss
     #
     sm = sim(tt,pp,pr,init,0)
@@ -332,7 +332,7 @@ def matchSim(b,pr):
     matchSim_ss = ss
     return sm, ss
 
-def plotMatches(obs,prs,dates=False,legend=True,filename="",filetype="png",envir=False,plot=True,fig=False,ax1=False,ax2=False):
+def plotMatches(obs,prs,fresh=False,dates=False,legend=True,filename="",filetype="png",envir=False,plot=True,fig=False,ax1=False,ax2=False):
     import matplotlib.pyplot as plt
     plt.rcParams.update({'text.usetex': True})
     plt.rcParams.update({'font.size': 14})
@@ -364,7 +364,7 @@ def plotMatches(obs,prs,dates=False,legend=True,filename="",filetype="png",envir
         if len(prs) > 0:
             sms = []; sss = []
             for pr in prs:
-                sm, ss = matchSim(o,pr)
+                sm, ss = matchSim(o,pr,fresh=fresh)
                 sms.append(sm); sss.append(ss)
             sms = numpy.array(sms); sss = numpy.array(sss)
         #
@@ -413,7 +413,7 @@ def plotMatches(obs,prs,dates=False,legend=True,filename="",filetype="png",envir
     else:
         return fig, ax1
 
-def getScores(obs):
+def getScores(obs,fresh=True):
     def score(pr,verbose=False):
         scr = checkPar(pr)
         if scr >= 1e13:
@@ -424,7 +424,7 @@ def getScores(obs):
                 scr += b['funscr'](pr)
                 continue
             #
-            sm, ss = matchSim(b,pr)
+            sm, ss = matchSim(b,pr,fresh=fresh)
             if numpy.all(sm==0) or numpy.all(ss==0):
                 return 1e13
             for spc in species:
