@@ -46,7 +46,7 @@ def simClims(clims,param=[],funpar=None,init=[100,0,0,0],thr=0):
                 ret.append([i,clim['days'][ii],po,(numpy.where(A>(0.5*po))[0][0]-1)/TSCALE])
     return ret
 
-def simObs(obs,param,fresh=True):
+def simObs(obs,param):
     ret = []
     if not 'temp' in obs:
         return None
@@ -56,16 +56,16 @@ def simObs(obs,param,fresh=True):
         tm = numpy.array([obs['Date'][0]+timedelta(days=t) for t in tm])
     #
     for pr in param:
-        sm, ss = matchSim(obs,pr,fresh=fresh)
+        sm, ss = matchSim(obs,pr)
         A = numpy.cumsum(sm[:,7])
         po = A[-1]
         s = obs['E'][0]
         if numpy.isnan(s):
             s = obs['L'][0]
         if po < 0.5 or not numpy.any(A>(0.5*po)):
-            ret.append([tm[0],100.0*po/s,numpy.nan])
+            ret.append([tm[0],po,100.0*po/s,numpy.nan])
         else:
-            ret.append([tm[0],100.0*po/s,(numpy.where(A>(0.5*po))[0][0]-1)/TSCALE])
+            ret.append([tm[0],po,100.0*po/s,(numpy.where(A>(0.5*po))[0][0]-1)/TSCALE])
     #
     return ret
 
@@ -164,13 +164,15 @@ def calcObs(o):
     }
     if numpy.all(o['A']==0):
         d['A'] = numpy.nan
+        d['Ap'] = numpy.nan
         d['lA'] = numpy.nan
     else:
         j = numpy.where(o['A']>o['A'][-1]*0.5)[0][0]
         s = o['E'][0]
         if numpy.isnan(s):
             s = o['L'][0]
-        d['A'] = 100.0*o['A'][-1]/s
+        d['A'] = o['A'][-1]
+        d['Ap'] = 100.0*o['A'][-1]/s
         d['lA'] = (o['Date'][j]-o['Date'][0]).days
     return d
 
