@@ -148,7 +148,7 @@ void print_zero(int tm, double *ret) {
 }
 
 void sim(int tf, double *temp, double *photo, double *pr, double *y0, double thr, double *ret) {
-    set_APPROX(1e-3);
+    set_APPROX(1e-2);
     //
     double p1  = 0.0,
            p2  = 0.0,

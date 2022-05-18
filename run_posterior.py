@@ -128,7 +128,7 @@ tasklist = [
         'kernel': 1e-3,
         'pospos': {'eps': [400.0], 'size': 100, 'niter': 1000000, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5), 'inferpar':[]},
         'pargen': model.randomPar, # model.randomFixed, # None, # model.randomPar,
-        'optopt': {'sigma':[200.0,1.0],'adapt':20,'chain':50,'hopp':8,'inferpar':[]},
+        'optopt': {'sigma':[200.0,1.0],'adapt':10,'chain':50,'hopp':8,'inferpar':[]},
         'optim': 2,
         'param': []
     }
