@@ -41,7 +41,8 @@
 double min(double x, double y) { return(x<y ? x : y); }
 double max(double x, double y) { return(x>y ? x : y); }
 
-#define briere1(T,T0,T1,a) ((T)<=(T0) ? 1e13 : ((T)>=((T0)+(T1)) ? 1e13 : min(1e13, 1.0/(exp(a)*(T)*((T)-(T0))*sqrt((T0)+(T1)-(T))))))
+#define briere1C(T,T0,T1,a) ((T)<=(T0) ? 1e13 : ((T)>=((T0)+(T1)) ? 1e13 : min(1e13, 1.0/(exp(a)*(T)*((T)-(T0))*sqrt((T0)+(T1)-(T))))))
+#define briere1(T,T0,T1,a) (briere1C(273.15+(T),273.15+(T0),273.15+(T1),(a)))
 
 #define fundev2(T,T0,T1,M0,M1,Ts) ((M0)+(M1)/(1.0+exp((Ts)*((T0)+(T1)-(T))*((T)-(T0)))))
 #define fundev(T,Tm,Ts,Mx,Mn) ((Mn)+((Mx)-(Mn))/(1.0+exp((Ts)*((Tm)-(T)))))

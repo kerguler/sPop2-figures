@@ -248,7 +248,7 @@ def plotPDC(parmat,labels=[],ylog=False,subset=False,ylim=[],filename="",filetyp
     sset = [0,1,2,3,-1, 4,6,8,-2, 5,7,9,-3] if not subset else [1,2,-1, 6,8,-2, 7,9,-3]
     for n in sset:
         if n in [-1,-2,-3]:
-            if ylim:
+            if ylim and n in [-2,-3]:
                 plt.ylim(ylim)
             legend = plt.legend()
             legend.get_frame().set_alpha(0.25)
@@ -429,11 +429,14 @@ def getScores(obs):
                 if b['type'] == 'CN0w':
                     # sd = b[spc][1:]**0.25
                     # sd[sd<1.0] = 1.0
-                    sd = 1.0
+                    sd = b[spc][1:]**0.125
+                    sd[sd<1.0] = 1.0
                     scr += numpy.nansum(( (b[spc][1:] - ss[:,n][ b['days'][1:]*TSCALE ])/sd )**2 ) # / (b['days'].shape[0]-1.0)
                 elif b['type'] == 'AN0s':
                     # sd = b[spc][1:]**0.125
                     # sd[sd<1.0] = 1.0
+                    sd = b[spc][1:]**0.125
+                    sd[sd<1.0] = 1.0
                     sd = 1.0
                     scr += numpy.nansum(( (b[spc][1:] - sm[:,n][ b['days'][1:]*TSCALE ])/sd )**2 ) # / (b['days'].shape[0]-1.0)
                 else:
