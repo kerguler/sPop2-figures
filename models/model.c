@@ -36,13 +36,11 @@
 #define p_ph_thr   32
 #define p_ph_scale 33
 
-#define PHOTO      1
-
 double min(double x, double y) { return(x<y ? x : y); }
 double max(double x, double y) { return(x>y ? x : y); }
 
-#define briere1C(T,T0,T1,a) ((T)<=(T0) ? 1e13 : ((T)>=((T0)+(T1)) ? 1e13 : min(1e13, 1.0/(exp(a)*(T)*((T)-(T0))*sqrt((T0)+(T1)-(T))))))
-#define briere1(T,T0,T1,a) (briere1C(273.15+(T),273.15+(T0),273.15+(T1),(a)))
+#define briere1C(T,T0,T1,a) ((T)<=(T0) ? 1e13 : ((T)>=((T0)+(T1)) ? 1e13 : min(1e13, max(1.0, 1.0/(exp(a)*(T)*((T)-(T0))*sqrt((T0)+(T1)-(T)))))))
+#define briere1(T,T0,T1,a) (briere1C(273.15+(T),273.15+(T0),(T1),(a)))
 
 #define fundev2(T,T0,T1,M0,M1,Ts) ((M0)+(M1)/(1.0+exp((Ts)*((T0)+(T1)-(T))*((T)-(T0)))))
 #define fundev(T,Tm,Ts,Mx,Mn) ((Mn)+((Mx)-(Mn))/(1.0+exp((Ts)*((Tm)-(T)))))
@@ -100,7 +98,7 @@ void f_d2ms(double x, double ph, double *p, double *m, double *s) {
                  p[p_d2m_1],
                  p[p_d2m_2],
                  p[p_d2m_3]);
-    if (PHOTO) {
+    if ((p[p_ph_thr] > 0) & (p[p_ph_scale] > 0)) {
         double scl;
         f_ph(ph,p,&scl);
         *m *= scl;

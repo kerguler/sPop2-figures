@@ -67,8 +67,8 @@ clscl = ['black',
          'black',
          '#004488',
          '#004488',
-         '#ee3377',#'#cc3311',
-         '#ee3377',#'#cc3311',
+         '#ee3377',
+         '#ee3377',
          'black'
 ]
 
@@ -83,21 +83,6 @@ colours = {
     'P':"green",
     'A':"black"
 }
-
-def randomFixed():
-    # Infer: [2,7,12,17, 22,28,34, 25,31,37]
-    pr = lower + uniform(size=lower.shape[0])*(upper-lower)
-    pr[[0,5,10,15]] = -10.0
-    pr[[1,6,11,16]] = 60.0
-    pr[[3,8,13,18]] = 0.0
-    pr[[4,9,14,19]] = 1.0
-    pr[[20,26,32]] = -10.0
-    pr[[21,27,33]] = 60.0
-    pr[[23,29,35]] = 500.0
-    pr[[24,30,36]] = 1.0
-    pr[38] = 0.0
-    pr[39] = 1.0
-    return pr
 
 param = numpy.array([
         [-10,   60,        15.0],              #0  p1.1
@@ -126,19 +111,19 @@ param = numpy.array([
         #
         [-10,   60,        15.0],              #20 d1m.1
         [0,     60,        20.0],              #21 d1m.2
-        [-8,     0,          -5],              #22 d1m.3
+        [-20,    0,          -5],              #22 d1m.3
         #
         [0.1,    1,      0.2456],              #23 d1s.1
         #
         [-10,   60,        15.0],              #24 d2m.1
         [0,     60,        20.0],              #25 d2m.2
-        [-8,     0,          -5],              #26 d2m.3
+        [-20,    0,          -5],              #26 d2m.3
         #
         [0.1,    1,      0.2456],              #27 d2s.1
         #
         [-10,   60,        15.0],              #28 d3m.1
         [0,     60,        20.0],              #29 d3m.2
-        [-8,     0,          -5],              #30 d3m.3
+        [-20,    0,          -5],              #30 d3m.3
         #
         [0.1,    1,      0.2456],              #31 d3s.1
         #
@@ -170,6 +155,12 @@ def checkParV(pr):
         print("High",numpy.where(pr>upper)[0])
 
 def randomPar():
+    pr = lower + uniform(size=lower.shape[0])*(upper-lower)
+    pr[32] = 0
+    pr[33] = 0
+    return pr
+
+def randomParPP():
     return lower + uniform(size=lower.shape[0])*(upper-lower)
 
 def randomFile(filename):
@@ -429,15 +420,16 @@ def getScores(obs):
                 if b['type'] == 'CN0w':
                     # sd = b[spc][1:]**0.25
                     # sd[sd<1.0] = 1.0
-                    sd = b[spc][1:]**0.125
+                    sd = b[spc][1:]**0.25
                     sd[sd<1.0] = 1.0
+                    # sd = 1
                     scr += numpy.nansum(( (b[spc][1:] - ss[:,n][ b['days'][1:]*TSCALE ])/sd )**2 ) # / (b['days'].shape[0]-1.0)
                 elif b['type'] == 'AN0s':
                     # sd = b[spc][1:]**0.125
                     # sd[sd<1.0] = 1.0
-                    sd = b[spc][1:]**0.125
+                    sd = b[spc][1:]**0.25
                     sd[sd<1.0] = 1.0
-                    sd = 1.0
+                    # sd = 1.0
                     scr += numpy.nansum(( (b[spc][1:] - sm[:,n][ b['days'][1:]*TSCALE ])/sd )**2 ) # / (b['days'].shape[0]-1.0)
                 else:
                     print("Wrong type",b['type'])
