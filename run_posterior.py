@@ -128,13 +128,13 @@ tasklist = [
         # ][a] for a in [3,11,12,8,9,10]], # to be tested
         # ][a] for a in [11,9,0]], # to test
         # ][a] for a in [11,10,9]],
-        ][a] for a in [11,10,8,0]],
-        # ][a] for a in [10,8]],
+        # ][a] for a in [11,10,8,0]],
+        ][a] for a in [11,8]],
         'kernel': 1e-3,
         'pospos': {'eps': [400.0], 'size': 100, 'niter': 1000000, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5), 'inferpar':[]},
         'pargen': None, # model.randomParPP, # None, # model.randomParPP,
         # 'optopt': {'sigma':[200.0,10.0],'adapt':10,'chain':50,'hopp':8,'inferpar':[]},
-        'optopt': {'sigma':[200.0,10.0],'adapt':10,'chain':50,'hopp':8,'inferpar':[]},
+        'optopt': {'sigma':[200.0,5.0],'adapt':20,'chain':50,'hopp':8,'inferpar':[]},
         'optim': 2,
         'param': [20.16691329268544,-1.734290630436384e-05,0.9996026788463327,
                        20.16691329268544,-1.734290630436384e-05,0.9996026788463327,
