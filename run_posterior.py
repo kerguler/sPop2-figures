@@ -3,7 +3,7 @@ import numpy
 from inferfun import *
 import hoppMCMC
 
-import model
+import modelB as model
 import ftemp
 import vtemp
 import culex
@@ -124,14 +124,26 @@ tasklist = [
             vtemp.obs[14], # 13
             vtemp.obs[15], # 14
             vtemp.obs[16], # 15
-        # ][a] for a in [11,9]], # in manuscript 
-        ][a] for a in [3,11,12,8,9,10]], # to be tested
+        # ][a] for a in [11,9]], # in manuscript (supposed to be)
+        # ][a] for a in [3,11,12,8,9,10]], # to be tested
+        # ][a] for a in [11,9,0]], # to test
+        # ][a] for a in [11,10,9]],
+        ][a] for a in [11,10,8,0]],
+        # ][a] for a in [10,8]],
         'kernel': 1e-3,
         'pospos': {'eps': [400.0], 'size': 100, 'niter': 1000000, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5), 'inferpar':[]},
-        'pargen': model.randomParPP, # None, # model.randomParPP,
+        'pargen': None, # model.randomParPP, # None, # model.randomParPP,
+        # 'optopt': {'sigma':[200.0,10.0],'adapt':10,'chain':50,'hopp':8,'inferpar':[]},
         'optopt': {'sigma':[200.0,10.0],'adapt':10,'chain':50,'hopp':8,'inferpar':[]},
         'optim': 2,
-        'param': []
+        'param': [20.16691329268544,-1.734290630436384e-05,0.9996026788463327,
+                       20.16691329268544,-1.734290630436384e-05,0.9996026788463327,
+                       20.16691329268544,-1.734290630436384e-05,0.9996026788463327,
+                       20.16691329268544,-1.734290630436384e-05,0.9996026788463327,
+                       0.5878155099682353,31.18695506781095,-13.29289056052912,0.5300914816702602,
+                       0.5878155099682353,31.18695506781095,-13.29289056052912,0.5300914816702602,
+                       0.5878155099682353,31.18695506781095,-13.29289056052912,0.5300914816702602,
+                       8.21722606535649,8.785637095571801]
     }
 ]
 

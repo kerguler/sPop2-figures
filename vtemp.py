@@ -61,7 +61,7 @@ for index, row in dat.iterrows():
             'L':[],
             'P':[],
             'A':[],
-            'type':'AN0s',
+            'type':'AN0sP',
             'compare':['L','P','A']
         }
     obs[row[0]]['Date'].append(str2date2(row[1]))
