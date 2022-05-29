@@ -245,6 +245,55 @@ def plotPDC(parmat,labels=[],ylog=False,subset=False,ylim=[],filename="",filetyp
     sset = [0,1,2,3,-1, 4,6,8,-2, 5,7,9,-3] if not subset else [1,2,-1, 6,8,-2, 7,9,-3]
     for n in sset:
         if n in [-1,-2,-3]:
+            if ylog and n in [-2,-3]:
+                plt.yscale("log")
+                locs = [0.1, 0.5, 1, 5, 10, 50, 100]
+                plt.yticks(locs, ["%g" %l for l in locs])
+                # matplotlib.axis.Axis Axes.axes  (matplotlib.ticker.ScalarFormatter())
+            if ylim and n in [-2,-3]:
+                plt.ylim(ylim)
+            legend = plt.legend()
+            legend.get_frame().set_alpha(0.25)
+            plt.rcParams.update({'font.size': 14})
+            plt.xticks(fontsize=14)
+            plt.yticks(fontsize=14)
+            if filename:
+                plt.savefig(filename+"_"+str(-n)+"."+filetype,bbox_inches="tight",dpi=300)
+            plt.show()
+            plt.yscale("linear")
+            continue
+        plt.fill_between(xr,pp[0][:,n],pp[2][:,n],color=clscl[n],alpha=0.5)
+        plt.plot(xr,pp[1][:,n],color=clscl[n],label=namesC[n])
+        plt.ylabel(parnamesC[n],fontsize=14)
+        plt.xlabel("Temperature (°C)",fontsize=14)
+    #
+    ph = numpy.arange(0,24,0.1)
+    xr = numpy.repeat(25.0,len(ph))
+    pp = numpy.percentile(numpy.array([getPD(xr,ph,rescalepar(pr)) for pr in parmat]),prange,axis=0)
+    n = 10
+    plt.fill_between(ph,pp[0][:,n],pp[2][:,n],color=clscl[n],alpha=0.5)
+    plt.plot(ph,pp[1][:,n],color=clscl[n],label=None)
+    plt.ylabel(parnames[n],fontsize=14)
+    plt.xlabel("Daylength (hours)",fontsize=14)
+    plt.rcParams.update({'font.size': 14})
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
+    if filename:
+        plt.savefig(filename+"_"+str(n)+"."+filetype,bbox_inches="tight",dpi=300)
+    plt.show()    
+
+def plotPDC_old(parmat,labels=[],ylog=False,subset=False,ylim=[],filename="",filetype="png"):
+    import matplotlib
+    from matplotlib import pyplot as plt
+    plt.rcParams.update({'text.usetex': True})
+    plt.rcParams.update({'font.size': 14})
+    #
+    xr = numpy.arange(-5,50,0.1)
+    ph = numpy.repeat(24.0,len(xr))
+    pp = numpy.percentile(numpy.array([getPD(xr,ph,rescalepar(pr)) for pr in parmat]),prange,axis=0)
+    sset = [0,1,2,3,-1, 4,6,8,-2, 5,7,9,-3] if not subset else [1,2,-1, 6,8,-2, 7,9,-3]
+    for n in sset:
+        if n in [-1,-2,-3]:
             if ylim and n in [-2,-3]:
                 plt.ylim(ylim)
             legend = plt.legend()

@@ -1,7 +1,7 @@
 TSCALE = 4
 import numpy
 from numpy.random import uniform
-from scipy.stats import gamma, poisson
+from scipy.stats import gamma, poisson, nbinom
 from datetime import datetime, timedelta, date
 from ctypes import *
 import numpy.ctypeslib as npct
@@ -86,19 +86,19 @@ colours = {
 
 param = numpy.array([
         [-10,   60,        15.0],              #0  p1.1
-        [-1,     0,      -0.001],              #1  p1.2
+        [-20,    0,          -3],              #1  p1.2
         [0,      1,       0.999],              #2  p1.3
         #
         [-10,   60,        15.0],              #3  p2.1
-        [-1,     0,      -0.001],              #4  p2.2
+        [-20,    0,          -3],              #4  p2.2
         [0,      1,       0.999],              #5  p2.3
         #
         [-10,   60,        15.0],              #6 p3.1
-        [-1,     0,      -0.001],              #7 p3.2
+        [-20,    0,          -3],              #7 p3.2
         [0,      1,       0.999],              #8 p3.3
         #
         [-10,   60,        15.0],              #9 p4.1
-        [-1,     0,      -0.001],              #10 p4.2
+        [-20,    0,          -3],              #10 p4.2
         [0,      1,       0.999],              #11 p4.3
         #
         [-10,   60,        15.0],              #12 d1m.1
@@ -119,8 +119,12 @@ param = numpy.array([
         #
         [0.1,    1,      0.2456],              #23 d3s.1
         #
+        # [0,      0,         0.0],              #24 ph.thr
+        # [0,      0,         0.0],              #25 ph.scale
+        # [0,      0,         0.0]               #26 ph.steep
         [0,     24,        14.0],              #24 ph.thr
-        [0,     10,         1.0]               #25 ph.scale
+        [0,     10,         1.0],              #25 ph.scale
+        [0,     10,         1.0]               #26 ph.steep
 ])
 lower = param[:,0]
 upper = param[:,1]
@@ -146,6 +150,7 @@ def randomPar():
     pr = lower + uniform(size=lower.shape[0])*(upper-lower)
     pr[24] = 0
     pr[25] = 0
+    pr[26] = 0
     return pr
 
 def randomParPP():
@@ -421,6 +426,14 @@ def getScores(obs):
                     scr += numpy.nansum( -poisson.logpmf(b[spc][1:], ss[:,n][ b['days'][1:]*TSCALE ]) )
                 elif b['type'] == 'AN0sP':
                     scr += numpy.nansum( -poisson.logpmf(b[spc][1:], sm[:,n][ b['days'][1:]*TSCALE ]) )
+                elif b['type'] == 'CN0wP0':
+                    xr = b[spc][1:] > 0
+                    scr += numpy.nansum( -poisson.logpmf(b[spc][1:][xr], ss[:,n][ b['days'][1:]*TSCALE ][xr]) )
+                    scr += numpy.nansum(ss[:,n][ b['days'][1:]*TSCALE ][~xr])
+                elif b['type'] == 'AN0sP0':
+                    xr = b[spc][1:] > 0
+                    scr += numpy.nansum( -poisson.logpmf(b[spc][1:][xr], sm[:,n][ b['days'][1:]*TSCALE ][xr]) )
+                    scr += numpy.nansum(sm[:,n][ b['days'][1:]*TSCALE ][~xr])
                 else:
                     print("Wrong type",b['type'])
                     return 1e13
