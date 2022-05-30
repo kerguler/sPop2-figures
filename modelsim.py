@@ -1,7 +1,7 @@
 TSCALE = 4
 import numpy
 from matplotlib.pyplot import clim
-from modelB import sim, getInit, matchSim
+from modelD import sim, getInit, matchSim
 from datetime import datetime, timedelta, date
 from matplotlib import pylab as plt
 import pandas

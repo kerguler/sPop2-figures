@@ -1,13 +1,13 @@
 TSCALE = 4
 import numpy
 from numpy.random import uniform
-from scipy.stats import gamma, poisson
+from scipy.stats import gamma, poisson, nbinom
 from datetime import datetime, timedelta, date
 from ctypes import *
 import numpy.ctypeslib as npct
 array_1d_double = npct.ndpointer(dtype=numpy.float64, ndim=1, flags='CONTIGUOUS')
 
-filename = "./models/model.dylib"
+filename = "./models/modelD.dylib"
 model = cdll.LoadLibrary(filename)
 
 csim = model.sim
@@ -89,53 +89,47 @@ param = numpy.array([
         [0,     60,        20.0],              #1  p1.2
         [0,      1,        0.22],              #2  p1.3
         [0,      1,         0.5],              #3  p1.4
-        [0,      1,      0.1258],              #4  p1.5
+        [0,    0.1,      0.0258],              #4  p1.5
         #
         [-10,   60,        15.0],              #5  p2.1
         [0,     60,        20.0],              #6  p2.2
         [0,      1,        0.22],              #7  p2.3
         [0,      1,         0.5],              #8  p2.4
-        [0,      1,      0.1258],              #9  p2.5
+        [0,    0.1,      0.0258],              #9  p2.5
         #
         [-10,   60,        15.0],              #10 p3.1
         [0,     60,        20.0],              #11 p3.2
         [0,      1,        0.22],              #12 p3.3
         [0,      1,         0.5],              #13 p3.4
-        [0,      1,      0.1258],              #14 p3.5
+        [0,    0.1,      0.0258],              #14 p3.5
         #
         [-10,   60,        15.0],              #15 p4.1
         [0,     60,        20.0],              #16 p4.2
         [0,      1,        0.22],              #17 p4.3
         [0,      1,         0.5],              #18 p4.4
-        [0,      1,      0.1258],              #19 p4.5
+        [0,    0.1,      0.0258],              #19 p4.5
         #
         [-10,   60,        15.0],              #20 d1m.1
         [0,     60,        20.0],              #21 d1m.2
-        [1,    500,       220.0],              #22 d1m.3
-        [0,    500,        50.0],              #23 d1m.4
-        [0,      1,      0.1258],              #24 d1m.5
+        [-20,    0,          -5],              #22 d1m.3
         #
-        [0.1,    1,      0.2456],              #25 d1s.1
+        [0.1,    1,      0.2456],              #23 d1s.1
         #
-        [-10,   60,        15.0],              #26 d2m.1
-        [0,     60,        20.0],              #27 d2m.2
-        [1,    500,       220.0],              #28 d2m.3
-        [0,    500,        50.0],              #29 d2m.4
-        [0,      1,      0.1258],              #30 d2m.5
+        [-10,   60,        15.0],              #24 d2m.1
+        [0,     60,        20.0],              #25 d2m.2
+        [-20,    0,          -5],              #26 d2m.3
         #
-        [0.1,    1,      0.2456],              #31 d2s.1
+        [0.1,    1,      0.2456],              #27 d2s.1
         #
-        [-10,   60,        15.0],              #32 d3m.1
-        [0,     60,        20.0],              #33 d3m.2
-        [1,    500,       220.0],              #34 d3m.3
-        [0,    500,        50.0],              #35 d3m.4
-        [0,      1,      0.1258],              #36 d3m.5
+        [-10,   60,        15.0],              #28 d3m.1
+        [0,     60,        20.0],              #29 d3m.2
+        [-20,    0,          -5],              #30 d3m.3
         #
-        [0.1,    1,      0.2456],              #37 d3s.1
+        [0.1,    1,      0.2456],              #31 d3s.1
         #
-        [0,     24,        14.0],              #38 ph.thr
-        [0,     10,         1.0],              #39 ph.scale
-        [0,     10,         1.0]               #40 ph.steep        
+        [0,     24,        14.0],              #32 ph.thr
+        [0,     10,         1.0],              #33 ph.scale
+        [0,     10,         1.0]               #34 ph.steep
 ])
 lower = param[:,0]
 upper = param[:,1]
@@ -163,9 +157,9 @@ def checkParV(pr):
 
 def randomPar():
     pr = lower + uniform(size=lower.shape[0])*(upper-lower)
-    pr[38] = 0
-    pr[39] = 0
-    pr[40] = 0
+    pr[32] = 0
+    pr[33] = 0
+    pr[34] = 0
     return pr
 
 def randomParPP():
@@ -264,55 +258,6 @@ def plotPDC(parmat,labels=[],ylog=False,subset=False,ylim=[],filename="",filetyp
             plt.show()
             plt.yscale("linear")
             continue
-        plt.fill_between(xr,pp[0][:,n],pp[2][:,n],color=clscl[n],alpha=0.5)
-        plt.plot(xr,pp[1][:,n],color=clscl[n],label=namesC[n])
-        plt.ylabel(parnamesC[n],fontsize=14)
-        plt.xlabel("Temperature (°C)",fontsize=14)
-    #
-    ph = numpy.arange(0,24,0.1)
-    xr = numpy.repeat(25.0,len(ph))
-    pp = numpy.percentile(numpy.array([getPD(xr,ph,rescalepar(pr)) for pr in parmat]),prange,axis=0)
-    n = 10
-    plt.fill_between(ph,pp[0][:,n],pp[2][:,n],color=clscl[n],alpha=0.5)
-    plt.plot(ph,pp[1][:,n],color=clscl[n],label=None)
-    plt.ylabel(parnames[n],fontsize=14)
-    plt.xlabel("Daylength (hours)",fontsize=14)
-    plt.rcParams.update({'font.size': 14})
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
-    if filename:
-        plt.savefig(filename+"_"+str(n)+"."+filetype,bbox_inches="tight",dpi=300)
-    plt.show()    
-
-def plotPDC_old(parmat,labels=[],ylog=False,subset=False,ylim=[],filename="",filetype="png"):
-    import matplotlib
-    from matplotlib import pyplot as plt
-    plt.rcParams.update({'text.usetex': True})
-    plt.rcParams.update({'font.size': 14})
-    #
-    xr = numpy.arange(-5,50,0.1)
-    ph = numpy.repeat(24.0,len(xr))
-    pp = numpy.percentile(numpy.array([getPD(xr,ph,rescalepar(pr)) for pr in parmat]),prange,axis=0)
-    sset = [0,1,2,3,-1, 4,6,8,-2, 5,7,9,-3] if not subset else [1,2,-1, 6,8,-2, 7,9,-3]
-    for n in sset:
-        if n in [-1,-2,-3]:
-            if ylim and n in [-2,-3]:
-                plt.ylim(ylim)
-            legend = plt.legend()
-            legend.get_frame().set_alpha(0.25)
-            plt.rcParams.update({'font.size': 14})
-            plt.xticks(fontsize=14)
-            plt.yticks(fontsize=14)
-            if filename:
-                plt.savefig(filename+"_"+str(-n)+"."+filetype,bbox_inches="tight",dpi=300)
-            plt.show()
-            plt.yscale("linear")
-            continue
-        if ylog:
-            plt.yscale("log")
-            locs = [0.1, 0.5, 1, 5, 10, 50, 100]
-            plt.yticks(locs, ["%g" %l for l in locs])
-            # matplotlib.axis.Axis Axes.axes  (matplotlib.ticker.ScalarFormatter())
         plt.fill_between(xr,pp[0][:,n],pp[2][:,n],color=clscl[n],alpha=0.5)
         plt.plot(xr,pp[1][:,n],color=clscl[n],label=namesC[n])
         plt.ylabel(parnamesC[n],fontsize=14)
@@ -475,17 +420,29 @@ def getScores(obs):
                 n = numpy.where(species==spc)[0][0]
                 #
                 if b['type'] == 'CN0w':
-                    sd = b[spc][1:]**0.25
+                    if numpy.any(b[spc][1:]) > 0 and numpy.all(ss[:,n][ b['days'][1:]*TSCALE ] < 1e-13):
+                        return 1e13
+                    sd = b[spc][1:]**0.5 # 0.25
                     sd[sd<1.0] = 1.0
                     scr += numpy.nansum(( (b[spc][1:] - ss[:,n][ b['days'][1:]*TSCALE ])/sd )**2 ) # / (b['days'].shape[0]-1.0)
                 elif b['type'] == 'AN0s':
-                    sd = b[spc][1:]**0.125
+                    if numpy.any(b[spc][1:]) > 0 and numpy.all(sm[:,n][ b['days'][1:]*TSCALE ] < 1e-13):
+                        return 1e13
+                    sd = b[spc][1:]**0.5 # 0.125
                     sd[sd<1.0] = 1.0
                     scr += numpy.nansum(( (b[spc][1:] - sm[:,n][ b['days'][1:]*TSCALE ])/sd )**2 ) # / (b['days'].shape[0]-1.0)
                 elif b['type'] == 'CN0wP':
                     scr += numpy.nansum( -poisson.logpmf(b[spc][1:], ss[:,n][ b['days'][1:]*TSCALE ]) )
                 elif b['type'] == 'AN0sP':
                     scr += numpy.nansum( -poisson.logpmf(b[spc][1:], sm[:,n][ b['days'][1:]*TSCALE ]) )
+                elif b['type'] == 'CN0wP0':
+                    xr = b[spc][1:] > 0
+                    scr += numpy.nansum( -poisson.logpmf(b[spc][1:][xr], ss[:,n][ b['days'][1:]*TSCALE ][xr]) )
+                    scr += numpy.nansum(ss[:,n][ b['days'][1:]*TSCALE ][~xr])
+                elif b['type'] == 'AN0sP0':
+                    xr = b[spc][1:] > 0
+                    scr += numpy.nansum( -poisson.logpmf(b[spc][1:][xr], sm[:,n][ b['days'][1:]*TSCALE ][xr]) )
+                    scr += numpy.nansum(sm[:,n][ b['days'][1:]*TSCALE ][~xr])
                 else:
                     print("Wrong type",b['type'])
                     return 1e13

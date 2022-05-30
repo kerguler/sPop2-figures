@@ -3,7 +3,7 @@ import numpy
 from inferfun import *
 import hoppMCMC
 
-import modelD as model
+import model as model
 import ftemp
 import vtemp
 import culex
@@ -129,11 +129,29 @@ tasklist = [
         # ][a] for a in [11,8]], # in manuscript (in reality)
         ][a] for a in [11,7,0,8]], # suggested by the reviewer
         'kernel': 1e-3,
-        'pospos': {'eps': [700.0], 'size': 100, 'niter': 1000000, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5), 'inferpar':[]},
+        'pospos': {'eps': [700.0], 'size': 100, 'niter': 1000000, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5), 'inferpar':[]}, # numpy.arange(24)}, #[]},
         'pargen': model.randomParPP, # None, # model.randomParPP,
-        'optopt': {'sigma':[200.0,5.0],'adapt':10,'chain':50,'hopp':8,'inferpar':[]},
+        'optopt': {'sigma':[200.0,5.0],'adapt':10,'chain':50,'hopp':8,'inferpar':[]}, # numpy.arange(24)}, #[]},
         'optim': 2,
-        'param': []
+        # 'param': []
+        'param': [6.33885e+00,  5.10814e+01,  5.32647e-02,  5.39951e-01,
+        3.47351e-01,  7.46733e+00,  3.27974e+01,  6.68613e-04,
+        2.55490e-01,  7.10961e-01, -2.85806e+00,  3.99540e+01,
+        2.56041e-03,  3.01240e-01,  7.15575e-01,  6.03093e+00,
+        3.30922e+01,  4.65134e-03,  9.71205e-01,  2.40576e-01,
+        1.69202e+01,  4.28276e+01,  1.27288e+00,  5.27920e+01,
+        7.89529e-01,  9.85137e-01,  2.89740e+01,  2.59432e+01,
+        1.14956e+01,  3.41845e+01,  7.04015e-01,  1.40980e-01,
+        1.98079e+01,  2.31448e+01,  5.25644e+00,  9.75663e+01,
+        1.64384e-01,  1.60060e-01,  1.41196e+01,  3.31005e+00, 1.0]
+#        'param': [7.46733e+00,  3.27974e+01,  6.68613e-04,  2.55490e-01, 7.10961e-02,
+#                       7.46733e+00,  3.27974e+01,  6.68613e-04,  2.55490e-01, 7.10961e-02,
+#                       7.46733e+00,  3.27974e+01,  6.68613e-04,  2.55490e-01, 7.10961e-02,
+#                       7.46733e+00,  3.27974e+01,  6.68613e-04,  2.55490e-01, 7.10961e-02,
+#                       0.5878155099682353,31.18695506781095,-13.29289056052912,0.5300914816702602,
+#                       0.5878155099682353,31.18695506781095,-13.29289056052912,0.5300914816702602,
+#                       0.5878155099682353,31.18695506781095,-13.29289056052912,0.5300914816702602,
+#                       13.5,8.0,10.0]
     }
 ]
 
