@@ -94,16 +94,16 @@ tasklist = [
         ][a] for a in [0,3,6,9,12]],
         'kernel': 1e-3,
         'pospos': {'eps': [10000.0], 'size': 1000, 'niter': 1000000, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5)},
-        'optopt': {'sigma':[1000.0,10.0],'adapt':10,'chain':50,'hopp':8,'inferpar':[
+        'optopt': {'sigma':[1000.0,10.0],'adapt':10,'chain':50,'hopp':2,'inferpar':[
             5,6,7,8,9,
             10,11,12,13,14,
             15,16,17,18,19,
             24,25,26,27,
             28,29,30,31
         ]}, # for optimisation
-        'optim': 0,
-        'pargen': None, # model.randomPar,
-        'param': numpy.array([6.57398e+00,4.49960e+01,3.96071e-01,3.42160e-01,8.58386e-01,1.14825e+01,1.94776e+01,4.91615e-03,2.97761e-01,1.82851e-01,-2.67349e+00,4.13958e+01,1.54554e-02,6.65068e-01,4.25905e-02,-4.18135e-01,5.57574e+01,1.28583e-01,2.47986e-02,7.88965e-01,3.21150e+01,2.06405e+00,2.20412e+02,1.29821e+02,7.61155e-01,2.17173e-01,1.83414e+01,3.70145e+01,2.29322e+01,2.18493e+02,7.17811e-03,1.94256e-01,1.45248e+01,3.35249e+01,5.15903e+00,2.96453e+02,1.58669e-01,3.95734e-01,14,1.0])
+        'optim': 2,
+        'pargen': model.randomPar, # None, # model.randomPar,
+        'param': []
     },
     {
         'label': 'Cxpip_photo',
@@ -129,12 +129,12 @@ tasklist = [
         # ][a] for a in [11,8]], # in manuscript (in reality)
         ][a] for a in [11,7,0,8]], # suggested by the reviewer
         'kernel': 1e-3,
-        'pospos': {'eps': [700.0], 'size': 100, 'niter': 1000000, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5), 'inferpar':[]},
-        'pargen': model.randomParPP, # None, # model.randomParPP,
-        'optopt': {'sigma':[200.0,5.0],'adapt':10,'chain':50,'hopp':8,'inferpar':[]},
-        'optim': 2,
-        'param': []
+        'pospos': {'eps': [800.0], 'size': 100, 'niter': 1000000, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5), 'inferpar':[]},
+        'pargen': None, # model.randomParPP, # None, # model.randomParPP,
+        'optopt': {'sigma':[200.0,5.0],'adapt':10,'chain':50,'hopp':2,'inferpar':[]},
+        'optim': 0,
+        'param': [2.333596896479785,34.60242052873808,0.01403061266239496,0.6681384703153515,0.07541385593560161,9.012912627605107,53.0347795332536,0.0008435764663306788,0.3758406449748597,0.09643427326970375,-8.47462112012515,50.10372419531102,0.002308130213384392,0.4286163315598315,0.08449021408698712,-7.105814594413852,55.06615674320774,4.439324957229512e-05,0.2218637563072453,0.02579737043085537,4.994489152926351,17.49185878466518,-7.101476533328404,0.7393224742676755,16.34239908067132,21.38213757530077,-12.70390232557846,0.2322060176553762,17.83782327971186,23.56623168180224,-10.92018423369274,0.1037212979795569,13.88371994034933,0.4125379564465729,9.456426309184454]
     }
 ]
 
-getPosterior(tasklist[1])
+getPosterior(tasklist[0])
