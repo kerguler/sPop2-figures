@@ -32,7 +32,7 @@
 double min(double x, double y) { return(x<y ? x : y); }
 double max(double x, double y) { return(x>y ? x : y); }
 
-#define funmort(T,Tm,a,c) (1.0 - max(0.0,min(1.0, -exp(a)*(pow((T)-(Tm),4.0)) + (c))))
+#define funmort(T,Tm,a,c) (max(0.0,min(1.0, exp(a)*(pow((T)-(Tm),6.0)) + (c))))
 
 #define briere1C(T,T0,T1,a) ((T)<=(T0) ? 1e13 : ((T)>=((T0)+(T1)) ? 1e13 : min(1e13, max(1.0, 1.0/(exp(a)*(T)*((T)-(T0))*sqrt((T0)+(T1)-(T)))))))
 #define briere1(T,T0,T1,a) (briere1C(273.15+(T),273.15+(T0),(T1),(a)))

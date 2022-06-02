@@ -3,7 +3,7 @@ import numpy
 from inferfun import *
 import hoppMCMC
 
-import modelD as model
+import modelB as model
 import ftemp
 import vtemp
 import culex
@@ -93,23 +93,23 @@ tasklist = [
             culex.obs['30-3']
         ][a] for a in [0,3,6,9,12]],
         'kernel': 1e-3,
-        'pospos': {'eps': [800.0], 'size': 100, 'niter': 1000000, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5),'inferpar':[
-            5,6,7,8,9,
-            10,11,12,13,14,
-            15,16,17,18,19,
-            24,25,26,27,
-            28,29,30,31
+        'pospos': {'eps': [900.0], 'size': 100, 'niter': 1000000, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5),'inferpar':[
+            3,4,5,
+            6,7,8,
+            9,10,11,
+            16,17,18,19,
+            20,21,22,23
         ]},
-        'optopt': {'sigma':[1000.0,10.0],'adapt':10,'chain':50,'hopp':2,'inferpar':[
-            5,6,7,8,9,
-            10,11,12,13,14,
-            15,16,17,18,19,
-            24,25,26,27,
-            28,29,30,31
+        'optopt': {'sigma':[500.0,5.0],'adapt':10,'chain':MPI_SIZE,'hopp':2,'inferpar':[
+            3,4,5,
+            6,7,8,
+            9,10,11,
+            16,17,18,19,
+            20,21,22,23
         ]},
-        'optim': 0,
-        'pargen': None, # model.randomPar, # None, # model.randomPar,
-        'param': [59.63313825018248,19.84630435201534,0.2216030629236236,0.4112582043763288,0.09652621342827468,-1.99284559599864,35.27102433485844,0.005321295593566686,0.6532987905821004,0.04051886444525318,-6.356244060121677,40.52121423657937,0.01416163592046722,0.5901862133327224,0.04272473166735254,-7.392498334672977,11.7679368555553,0.1279267552618746,0.01302761550875341,0.03488470892063795,52.41498421210706,35.05916957592218,-16.89090375889076,0.783393412964936,9.366464215252105,58.95778915652801,-14.46258157580646,0.1511751571316022,11.05156853358932,58.36723392444317,-12.35046128343488,0.1723124169268649,0,0,0]
+        'optim': 2,
+        'pargen': model.randomPar, # None, # model.randomPar,
+        'param': []
     },
     {
         'label': 'Cxpip_photo',
@@ -136,12 +136,12 @@ tasklist = [
         # ][a] for a in [11,7,0,8]], # suggested by the reviewer
         ][a] for a in [6,11,7,0,8]], # suggested by the reviewer
         'kernel': 1e-3,
-        'pospos': {'eps': [800.0], 'size': 100, 'niter': 1000000, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5), 'inferpar':[]},
-        'pargen': None, # model.randomParPP, # None, # model.randomParPP,
-        'optopt': {'sigma':[200.0,5.0],'adapt':10,'chain':50,'hopp':2,'inferpar':[]},
-        'optim': 0,
-        'param': [-1.146734844825423,37.42663865168799,0.01167377702751094,0.6923808046141008,0.07549965463597716,8.197388342078137,52.74758863384428,0.00106179096830298,0.3960806515071563,0.02311315443031847,0.6627733478779261,48.90660179582061,0.002985342086801476,0.5449186750484895,0.02817394424257101,6.134267898343062,35.42725447498584,0.001565157673188426,0.4040003706336209,0.07007470545101775,0.4781839059480877,23.50124712113245,-8.525423939735367,0.1777469883706828,11.81765929979703,41.05581132095108,-13.75614149547356,0.1911448515306042,18.44598691674348,12.39193281205724,-9.781787932632978,0.1311308584333077,13.58335263736845,0.8281493115276526,9.640622829036097]
+        'pospos': {'eps': [900.0], 'size': 100, 'niter': 100, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5), 'inferpar':[]},
+        'pargen': model.randomParPP, # None, # model.randomParPP,
+        'optopt': {'sigma':[500.0,5.0],'adapt':10,'chain':MPI_SIZE,'hopp':2,'inferpar':[]},
+        'optim': 2,
+        'param': []
     }
 ]
 
-getPosterior(tasklist[0])
+getPosterior(tasklist[1])
