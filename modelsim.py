@@ -40,7 +40,7 @@ def simClims(clims,param=[],funpar=None,init=[100,0,0,0],thr=0):
             sm = sim(tm,ph,param,init,thr)
             A = numpy.cumsum(sm[:,7])
             po = A[-1]
-            if po < 1 or not numpy.any(A>(0.5*po)):
+            if po < 0.5 or not numpy.any(A>(0.5*po)):
                 ret.append([i,clim['days'][ii],po,numpy.nan])
             else:
                 ret.append([i,clim['days'][ii],po,(numpy.where(A>(0.5*po))[0][0]-1)/TSCALE])
