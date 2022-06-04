@@ -170,9 +170,10 @@ def calcObs(o):
         j = numpy.where(o['A']>o['A'][-1]*0.5)[0][0]
         s = o['E'][0]
         if numpy.isnan(s):
-            s = o['L'][0]
+            d['Ap'] = numpy.nan
+        else:
+            d['Ap'] = 100.0*o['A'][-1]/s
         d['A'] = o['A'][-1]
-        d['Ap'] = 100.0*o['A'][-1]/s
         d['lA'] = (o['Date'][j]-o['Date'][0]).days
     return d
 

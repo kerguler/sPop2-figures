@@ -1,6 +1,7 @@
 TSCALE = 4
 import numpy
 from numpy.random import uniform
+from numpy.random import poisson as rpois
 from scipy.stats import gamma, poisson, nbinom
 from datetime import datetime, timedelta, date
 from ctypes import *
@@ -85,36 +86,36 @@ colours = {
 }
 
 param = numpy.array([
-        [-10,   60,        15.0],              #0  p1.1
+        [0,     40,        15.0],              #0  p1.1
         [-20,    0,          -3],              #1  p1.2
         [0,      1,       0.999],              #2  p1.3
         #
-        [-10,   60,        15.0],              #3  p2.1
+        [0,     40,        15.0],              #3  p2.1
         [-20,    0,          -3],              #4  p2.2
         [0,      1,       0.999],              #5  p2.3
         #
-        [-10,   60,        15.0],              #6 p3.1
-        [-20,    0,          -3],              #7 p3.2
-        [0,      1,       0.999],              #8 p3.3
+        [0,     40,        15.0],              #6  p3.1
+        [-20,    0,          -3],              #7  p3.2
+        [0,      1,       0.999],              #8  p3.3
         #
-        [-10,   60,        15.0],              #9 p4.1
+        [0,     40,        15.0],              #9  p4.1
         [-20,    0,          -3],              #10 p4.2
         [0,      1,       0.999],              #11 p4.3
         #
-        [-10,   60,        15.0],              #12 d1m.1
-        [0,     60,        20.0],              #13 d1m.2
+        [-10,   20,        15.0],              #12 d1m.1
+        [25,    50,        20.0],              #13 d1m.2
         [-20,    0,          -5],              #14 d1m.3
         #
         [0.1,    1,      0.2456],              #15 d1s.1
         #
-        [-10,   60,        15.0],              #16 d2m.1
-        [0,     60,        20.0],              #17 d2m.2
+        [-10,   20,        15.0],              #16 d2m.1
+        [25,    50,        20.0],              #17 d2m.2
         [-20,    0,          -5],              #18 d2m.3
         #
         [0.1,    1,      0.2456],              #19 d2s.1
         #
-        [-10,   60,        15.0],              #20 d3m.1
-        [0,     60,        20.0],              #21 d3m.2
+        [-10,   20,        15.0],              #20 d3m.1
+        [25,    50,        20.0],              #21 d3m.2
         [-20,    0,          -5],              #22 d3m.3
         #
         [0.1,    1,      0.2456],              #23 d3s.1
@@ -150,6 +151,26 @@ def randomPar():
     pr[26] = 0
     return pr
 
+def randomParQ():
+    pr = lower + uniform(size=lower.shape[0])*(upper-lower)
+    pr[0] = 0
+    pr[1] = 0
+    pr[2] = 0
+    #
+    pr[9] = 0
+    pr[10] = 0
+    pr[11] = 0
+    #
+    pr[12] = 0
+    pr[13] = 25
+    pr[14] = 0
+    pr[15] = 1
+    #
+    pr[24] = 0
+    pr[25] = 0
+    pr[26] = 0
+    return pr
+
 def randomParPP():
     return lower + uniform(size=lower.shape[0])*(upper-lower)
 
@@ -167,11 +188,13 @@ def getPD(xr,ph,param):
         pp = ph[i]
         cpar(x,pp,param,vec)
         vv = vec.copy()
-        # vv[[0,1,2,3]] **= TSCALE
+        # Mortality:
         vv[[0,1,2,3]] = 1.0 - ((1.0-vv[[0,1,2,3]])**TSCALE)
-        if False:
-            vv[[0,1,2,3]] = numpy.log10(1.0/vv[[0,1,2,3]] - 1.0)
+        # Development time:
         vv[[4,5,6,7,8,9]] /= TSCALE
+        if True:
+            # Development rate:
+            vv[[4,5,6,7,8,9]] = 1.0 / vv[[4,5,6,7,8,9]]
         ret.append(vv.tolist())
     return numpy.array(ret)
 
@@ -275,12 +298,23 @@ def sim(temp,photo,pr,init,thr):
     return ret
 
 def getInit(b):
-    return numpy.array([
+    init = numpy.array([
         b['E'][0] if 'E' in b else 0,
         b['L'][0] if 'L' in b else 0,
         b['P'][0] if 'P' in b else 0,
         b['A'][0] if 'A' in b else 0
     ],dtype=numpy.float64)
+    #
+    if numpy.isnan(init[0]) and init[1] == 0:
+        # If the initial number of eggs is not known,
+        # but the experiment starts with eggs,
+        # initiate with an appropriate number of eggs by assuming 
+        # 30% mortality between 15 and 27.5oC (DOI:10.1093/jme/tjy224).
+        # 
+        mx = numpy.nanmax(b['L'])
+        init[0] = mx + rpois(lam=(mx/0.7)-mx,size=1)
+    #
+    return init
 
 matchSim_key = ["","",""]
 matchSim_sm = None
