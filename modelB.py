@@ -180,7 +180,7 @@ def randomFile(filename):
         return param[numpy.random.randint(low=0,high=param.shape[0]),:]
     return getPar
 
-def getPD(xr,ph,param):
+def getPD(xr,ph,param,rate=False):
     ret = []
     vec = numpy.ndarray(11,dtype=numpy.float64)
     for i in range(len(xr)):
@@ -192,7 +192,7 @@ def getPD(xr,ph,param):
         vv[[0,1,2,3]] = 1.0 - ((1.0-vv[[0,1,2,3]])**TSCALE)
         # Development time:
         vv[[4,5,6,7,8,9]] /= TSCALE
-        if True:
+        if rate:
             # Development rate:
             vv[[4,5,6,7,8,9]] = 1.0 / vv[[4,5,6,7,8,9]]
         ret.append(vv.tolist())
