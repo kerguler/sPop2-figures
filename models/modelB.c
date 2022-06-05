@@ -34,11 +34,9 @@ double max(double x, double y) { return(x>y ? x : y); }
 
 #define funmort(T,Tm,a,c) (max(0.0,min(1.0, exp(a)*(pow((T)-(Tm),4.0)) + (c))))
 
-// #define briere1C(T,T0,T1,a) ((T)<=(T0) ? 1e13 : ((T)>=((T0)+(T1)) ? 1e13 : min(1e13, max(1.0, 1.0/(exp(a)*(T)*((T)-(T0))*sqrt((T0)+(T1)-(T)))))))
 #define briere1C(T,T0,T1,a) ( (T) <= (T0) ? 1e13 : ( (T) >= (T1) ? 1e13 : min(1e13, max(1.0, 1.0/(exp(a)*(T)*((T)-(T0))*sqrt((T1)-(T))) ) ) ))
 #define briere1(T,T0,T1,a) (briere1C(273.15+(T),273.15+(T0),273.15+(T1),(a)))
 
-#define fundev2(T,T0,T1,M0,M1,Ts) ((M0)+(M1)/(1.0+exp((Ts)*((T0)+(T1)-(T))*((T)-(T0)))))
 #define funphoto(P,PT,PS,S) (1.0 + ((PS)/(1.0 + exp((S)*((P)-(PT))))))
 
 void f_ph(double ph, double *p, double *m) {

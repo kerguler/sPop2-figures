@@ -91,9 +91,15 @@ tasklist = [
             culex.obs['30-1'],
             culex.obs['30-2'],
             culex.obs['30-3']
-        ][a] for a in [0,3,6,9,12]],
+        # ][a] for a in [0,3,6,9,12]],
+        ][a] for a in [12,13,14]], # Separate fits
         'kernel': 1e-3,
-        'pospos': {'eps': [1000.0], 'size': 100, 'niter': 100, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5),'inferpar':[
+        'pospos': {
+            # 'eps': [1000.0], # Collective fit
+            'eps': [400.0], # Single temperature fits
+        # 'size': 100, # Collective fit
+        'size': 10, # Single temperature fits
+        'niter': 100, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5),'inferpar':[
             3,4,5,
             6,7,8,
             16,17,18,19,
@@ -107,7 +113,8 @@ tasklist = [
         ]},
         'optim': 0,
         'pargen': None, # model.randomParQ,
-        'param': [0,0,0,7.002156377512208,-17.53216981591055,0.004904754218633921,28.18614333276416,-16.67410419928161,0.006089471933767313,25,-19,0.005,0,50,0,1,9.906128563826497,49.62219359742059,-14.07664193467981,0.1557269337787638,11.62162733610185,47.55316836739943,-12.13487161521901,0.2024732575311672,0,0,0]
+        'param': [0,0,0,9.292404547546377,-16.51298192422995,0.00141755300967037,35.27496987048335,-17.41813282032602,0.2071731570649322,0,0,0,0,50,0,1,11.25912709349625,48.8199584232634,-14.21385492702515,0.2202263114752581,-4.799168146109181,49.37576101662545,-9.359994242472105,0.3075630935165294,0,0,0]
+        # 'param': [0,0,0,7.002156377512208,-17.53216981591055,0.004904754218633921,28.18614333276416,-16.67410419928161,0.006089471933767313,25,-19,0.005,0,50,0,1,9.906128563826497,49.62219359742059,-14.07664193467981,0.1557269337787638,11.62162733610185,47.55316836739943,-12.13487161521901,0.2024732575311672,0,0,0]
     },
     {
         'label': 'Cxpip_photo',
@@ -132,7 +139,7 @@ tasklist = [
         # ][a] for a in [11,10,8,0]], # This is very good, but not good enough given the extent of training data
         # ][a] for a in [11,8]], # in manuscript (in reality)
         # ][a] for a in [11,7,0,8]], # suggested by the reviewer
-        ][a] for a in [6,11,7,0,8]], # suggested by the reviewer
+        ][a] for a in [4,6,11,7,0,8]], # suggested by the reviewer
         'kernel': 1e-3,
         'pospos': {'eps': [1000.0], 'size': 100, 'niter': 100, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5), 'inferpar':[]},
         'pargen': None, # model.randomParPP,
@@ -142,4 +149,4 @@ tasklist = [
     }
 ]
 
-getPosterior(tasklist[1])
+getPosterior(tasklist[0])

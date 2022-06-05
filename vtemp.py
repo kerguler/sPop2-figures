@@ -88,6 +88,8 @@ for r in obs:
     obs_extend[r]['L'] = numpy.array(obs[r]['L']).copy()
     obs_extend[r]['P'] = numpy.array(obs[r]['P']).copy()
     obs_extend[r]['A'] = numpy.array(obs[r]['A']).copy()
+    obs_extend[r]['type'] = 'AN0sP'
+    obs_extend[r]['compare'] = ['L','P','A']
     #
     for i in range(30):
         obs_extend[r]['Date'] = numpy.hstack([obs_extend[r]['Date'], obs_extend[r]['Date'][-1]+timedelta(days=1)])

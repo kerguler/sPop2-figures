@@ -47,6 +47,19 @@ parnamesC = [
     'Dev. time ($\sigma$, days)',
     'Impact of photoperiod ($\phi$)'
 ]
+parnamesCr = [
+    'Daily mortality ($p_m$)',
+    'Daily mortality ($p_m$)',
+    'Daily mortality ($p_m$)',
+    'Daily mortality ($p_m$)',
+    'Dev. rate ($1/\mu$, 1/day)',
+    'Dev. time ($\sigma$, days)',
+    'Dev. time ($1/\mu$, 1/day)',
+    'Dev. time ($\sigma$, days)',
+    'Dev. time ($1/\mu$, 1/day)',
+    'Dev. time ($\sigma$, days)',
+    'Impact of photoperiod ($\phi$)'
+]
 namesC = [
     'Egg',
     'Larva',
@@ -194,7 +207,7 @@ def getPD(xr,ph,param,rate=False):
         vv[[4,5,6,7,8,9]] /= TSCALE
         if rate:
             # Development rate:
-            vv[[4,5,6,7,8,9]] = 1.0 / vv[[4,5,6,7,8,9]]
+            vv[[4,6,8]] = 1.0 / vv[[4,6,8]]
         ret.append(vv.tolist())
     return numpy.array(ret)
 
@@ -240,7 +253,7 @@ def plotPD(params,labels=[],ylog=False,filename="",filetype="png"):
         plt.savefig(filename+"_"+str(n)+"."+filetype,bbox_inches="tight",dpi=300)
     plt.show()
 
-def plotPDC(parmat,labels=[],ylog=False,subset=False,ylim=[],filename="",filetype="png"):
+def plotPDC(parmat,labels=[],ylog=False,subset=False,rate=False,xlim=[],xlimpp=[],ylim=[],ylimp=[],filename="",filetype="png"):
     import matplotlib
     from matplotlib import pyplot as plt
     plt.rcParams.update({'text.usetex': True})
@@ -248,17 +261,23 @@ def plotPDC(parmat,labels=[],ylog=False,subset=False,ylim=[],filename="",filetyp
     #
     xr = numpy.arange(-5,50,0.1)
     ph = numpy.repeat(24.0,len(xr))
-    pp = numpy.percentile(numpy.array([getPD(xr,ph,rescalepar(pr)) for pr in parmat]),prange,axis=0)
+    pp = numpy.percentile(numpy.array([getPD(xr,ph,rescalepar(pr),rate=rate) for pr in parmat]),prange,axis=0)
     sset = [0,1,2,3,-1, 4,6,8,-2, 5,7,9,-3] if not subset else [1,2,-1, 6,8,-2, 7,9,-3]
     for n in sset:
         if n in [-1,-2,-3]:
-            if ylog and n in [-2,-3]:
+            if ((ylog and not rate and n in [-2,-3]) or 
+                (ylog and rate and n in [-3])):
                 plt.yscale("log")
                 locs = [0.1, 0.5, 1, 5, 10, 50, 100]
                 plt.yticks(locs, ["%g" %l for l in locs])
                 # matplotlib.axis.Axis Axes.axes  (matplotlib.ticker.ScalarFormatter())
-            if ylim and n in [-2,-3]:
+            if ((ylim and not rate and n in [-2,-3]) or 
+                (ylim and rate and n in [-3])):
                 plt.ylim(ylim)
+            if ylimp and n in [-1]:
+                plt.ylim(ylimp)
+            if xlim:
+                plt.xlim(xlim)
             legend = plt.legend()
             legend.get_frame().set_alpha(0.25)
             plt.rcParams.update({'font.size': 14})
@@ -271,15 +290,17 @@ def plotPDC(parmat,labels=[],ylog=False,subset=False,ylim=[],filename="",filetyp
             continue
         plt.fill_between(xr,pp[0][:,n],pp[2][:,n],color=clscl[n],alpha=0.5)
         plt.plot(xr,pp[1][:,n],color=clscl[n],label=namesC[n])
-        plt.ylabel(parnamesC[n],fontsize=14)
+        plt.ylabel(parnamesCr[n] if rate else parnamesC[n],fontsize=14)
         plt.xlabel("Temperature (°C)",fontsize=14)
     #
     ph = numpy.arange(0,24,0.1)
     xr = numpy.repeat(25.0,len(ph))
-    pp = numpy.percentile(numpy.array([getPD(xr,ph,rescalepar(pr)) for pr in parmat]),prange,axis=0)
+    pp = numpy.percentile(numpy.array([getPD(xr,ph,rescalepar(pr),rate=rate) for pr in parmat]),prange,axis=0)
     n = 10
     plt.fill_between(ph,pp[0][:,n],pp[2][:,n],color=clscl[n],alpha=0.5)
     plt.plot(ph,pp[1][:,n],color=clscl[n],label=None)
+    if xlimpp:
+        plt.xlim(xlimpp)
     plt.ylabel(parnames[n],fontsize=14)
     plt.xlabel("Daylength (hours)",fontsize=14)
     plt.rcParams.update({'font.size': 14})
