@@ -139,14 +139,15 @@ tasklist = [
         # ][a] for a in [11,10,8,0]], # This is very good, but not good enough given the extent of training data
         # ][a] for a in [11,8]], # in manuscript (in reality)
         # ][a] for a in [11,7,0,8]], # suggested by the reviewer
-        ][a] for a in [4,6,11,7,0,8]], # suggested by the reviewer
+        # ][a] for a in [4,6,11,7,0,8]], # suggested by the reviewer
+        ][a] for a in [11,7,8]],
         'kernel': 1e-3,
-        'pospos': {'eps': [1000.0], 'size': 100, 'niter': 100, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5), 'inferpar':[]},
+        'pospos': {'eps': [600.0], 'size': 100, 'niter': 100, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5), 'inferpar':[]},
         'pargen': None, # model.randomParPP,
         'optopt': {'sigma':[500.0,5.0],'adapt':10,'chain':MPI_SIZE,'hopp':2,'inferpar':[]},
         'optim': 0,
-        'param': [20.19099516750302,-12.2492626221371,0.02075824680270736,21.41482723418393,-13.84228576666895,0.001223424826238019,2.289873800010128,-18.46884439264853,0.0004273099204426801,18.92921244749423,-16.61033160183414,0.002119452744123731,19.09434727881188,29.58655279517001,-0.1759272647891741,0.4247621465110369,10.3414012325555,49.83285570355365,-13.93195602373159,0.1660498027376169,15.94968285588442,49.39011384932345,-11.22286677191957,0.2050205700903959,13.55522951941849,0.923830326312553,9.664287777609927]
+        'param': [20.1221,-12.4131,0.0391837,24.0922,-14.9813,0.000888111,12.0272,-18.3165,3.17052e-05,10.5142,-17.7431,0.00140369,18.853,29.6776,-5.71836,0.453723,11.4886,42.2012,-13.5439,0.176566,16.5524,39.1699,-10.7283,0.262,13.5194,0.864929,6.90671]
     }
 ]
 
-getPosterior(tasklist[0])
+getPosterior(tasklist[1])
