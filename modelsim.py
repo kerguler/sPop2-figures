@@ -60,9 +60,7 @@ def simObs(obs,param):
         A = numpy.cumsum(sm[:,7])
         po = A[-1]
         s = obs['E'][0]
-        if numpy.isnan(s):
-            s = obs['L'][0]
-        if po < 0.5 or not numpy.any(A>(0.5*po)):
+        if s < 0.5 or po < 0.5 or not numpy.any(A>(0.5*po)):
             ret.append([tm[0],po,100.0*po/s,numpy.nan])
         else:
             ret.append([tm[0],po,100.0*po/s,(numpy.where(A>(0.5*po))[0][0]-1)/TSCALE])
