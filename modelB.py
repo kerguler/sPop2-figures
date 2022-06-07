@@ -362,7 +362,7 @@ def matchSim(b,pr):
     matchSim_ss = ss
     return sm, ss
 
-def plotMatches(obs,prs,dates=False,legend=True,filename="",filetype="png",envir=False,plot=True,fig=False,ax1=False,ax2=False):
+def plotMatches(obs,prs,dates=False,legend=True,mark=False,filename="",filetype="png",envir=False,plot=True,fig=False,ax1=False,ax2=False):
     import matplotlib.pyplot as plt
     plt.rcParams.update({'text.usetex': True})
     plt.rcParams.update({'font.size': 14})
@@ -435,6 +435,10 @@ def plotMatches(obs,prs,dates=False,legend=True,filename="",filetype="png",envir
     if not (dates and 'Date' in o):
         ax1.set_xlabel("Time (days)")
     if plot:
+        if mark:
+            x = ax1.get_xlim()
+            y = ax1.get_ylim()
+            plt.text(x[1],y[1],'*',fontsize=28,ha='right',va='top')
         if filename:
             plt.savefig(filename+"."+filetype,bbox_inches="tight",dpi=300)
         plt.show()
