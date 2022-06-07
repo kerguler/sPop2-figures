@@ -139,8 +139,8 @@ tasklist = [
         # ][a] for a in [11,10,8,0]], # This is very good, but not good enough given the extent of training data
         # ][a] for a in [11,8]], # in manuscript (in reality)
         # ][a] for a in [11,7,0,8]], # suggested by the reviewer
-        # ][a] for a in [4,6,11,7,0,8]], # suggested by the reviewer
-        ][a] for a in [11,6,8]],
+        ][a] for a in [4,6,11,7,0,8]], # suggested by the reviewer
+        # ][a] for a in [11,6,8]],
         'kernel': 1e-3,
         'pospos': {'eps': [600.0], 'size': 100, 'niter': 100, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5), 'inferpar':[]},
         'pargen': None, # model.randomParPP,
