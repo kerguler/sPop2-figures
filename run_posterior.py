@@ -142,7 +142,7 @@ tasklist = [
         ][a] for a in [4,6,11,7,0,8]], # suggested by the reviewer
         # ][a] for a in [11,6,8]],
         'kernel': 1e-3,
-        'pospos': {'eps': [910.0], 'size': 100, 'niter': 100, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5), 'inferpar':[]},
+        'pospos': {'eps': [920.0], 'size': 100, 'niter': 100, 'resample': False, 'particle': True, 'multivariate': True, 'adapt': numpy.arange(0,1000,5), 'inferpar':[]},
         'pargen': None, # model.randomParPP,
         'optopt': {'sigma':[500.0,5.0],'adapt':10,'chain':MPI_SIZE,'hopp':2,'inferpar':[]},
         'optim': 0,
