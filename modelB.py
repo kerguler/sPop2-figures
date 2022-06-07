@@ -462,30 +462,10 @@ def getScores(obs):
                     continue
                 n = numpy.where(species==spc)[0][0]
                 #
-                if b['type'] == 'CN0w':
-                    if numpy.any(b[spc][1:]) > 0 and numpy.all(ss[:,n][ b['days'][1:]*TSCALE ] < 1e-13):
-                        return 1e13
-                    sd = b[spc][1:]**0.5 # 0.25
-                    sd[sd<1.0] = 1.0
-                    scr += numpy.nansum(( (b[spc][1:] - ss[:,n][ b['days'][1:]*TSCALE ])/sd )**2 ) # / (b['days'].shape[0]-1.0)
-                elif b['type'] == 'AN0s':
-                    if numpy.any(b[spc][1:]) > 0 and numpy.all(sm[:,n][ b['days'][1:]*TSCALE ] < 1e-13):
-                        return 1e13
-                    sd = b[spc][1:]**0.5 # 0.125
-                    sd[sd<1.0] = 1.0
-                    scr += numpy.nansum(( (b[spc][1:] - sm[:,n][ b['days'][1:]*TSCALE ])/sd )**2 ) # / (b['days'].shape[0]-1.0)
-                elif b['type'] == 'CN0wP':
+                if b['type'] == 'CN0wP':
                     scr += numpy.nansum( -poisson.logpmf(b[spc][1:], ss[:,n][ b['days'][1:]*TSCALE ]) )
                 elif b['type'] == 'AN0sP':
                     scr += numpy.nansum( -poisson.logpmf(b[spc][1:], sm[:,n][ b['days'][1:]*TSCALE ]) )
-                elif b['type'] == 'CN0wP0':
-                    xr = b[spc][1:] > 0
-                    scr += numpy.nansum( -poisson.logpmf(b[spc][1:][xr], ss[:,n][ b['days'][1:]*TSCALE ][xr]) )
-                    scr += numpy.nansum(ss[:,n][ b['days'][1:]*TSCALE ][~xr])
-                elif b['type'] == 'AN0sP0':
-                    xr = b[spc][1:] > 0
-                    scr += numpy.nansum( -poisson.logpmf(b[spc][1:][xr], sm[:,n][ b['days'][1:]*TSCALE ][xr]) )
-                    scr += numpy.nansum(sm[:,n][ b['days'][1:]*TSCALE ][~xr])
                 else:
                     print("Wrong type",b['type'])
                     return 1e13

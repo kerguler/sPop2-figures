@@ -20,7 +20,7 @@ for index, row in dat.iterrows():
             'E':[],
             'L':[],
             'P':[],
-            'type':'CN0w',
+            'type':'CN0wP',
             'compare':['P']
         }
     obs[row[0]]['Date'].append(str2date2(row[2]))
