@@ -4,52 +4,39 @@
 #define p_p1_1     0
 #define p_p1_2     1
 #define p_p1_3     2
-#define p_p1_4     3
-#define p_p1_5     4
-#define p_p2_1     5
-#define p_p2_2     6
-#define p_p2_3     7
-#define p_p2_4     8
-#define p_p2_5     9
-#define p_p3_1     10
-#define p_p3_2     11
-#define p_p3_3     12
-#define p_p3_4     13
-#define p_p3_5     14
-#define p_p4_1     15
-#define p_p4_2     16
-#define p_p4_3     17
-#define p_p4_4     18
-#define p_p4_5     19
-#define p_d1m_1    20
-#define p_d1m_2    21
-#define p_d1m_3    22
-#define p_d1m_4    23
-#define p_d1m_5    24
-#define p_d1s_1    25
-#define p_d2m_1    26
-#define p_d2m_2    27
-#define p_d2m_3    28
-#define p_d2m_4    29
-#define p_d2m_5    30
-#define p_d2s_1    31
-#define p_d3m_1    32
-#define p_d3m_2    33
-#define p_d3m_3    34
-#define p_d3m_4    35
-#define p_d3m_5    36
-#define p_d3s_1    37
-#define p_ph_thr   38
-#define p_ph_scale 39
-#define p_ph_steep 40
+#define p_p2_1     3
+#define p_p2_2     4
+#define p_p2_3     5
+#define p_p3_1     6
+#define p_p3_2     7
+#define p_p3_3     8
+#define p_p4_1     9
+#define p_p4_2     10
+#define p_p4_3     11
+#define p_d1m_1    12
+#define p_d1m_2    13
+#define p_d1m_3    14
+#define p_d1s_1    15
+#define p_d2m_1    16
+#define p_d2m_2    17
+#define p_d2m_3    18
+#define p_d2s_1    19
+#define p_d3m_1    20
+#define p_d3m_2    21
+#define p_d3m_3    22
+#define p_d3s_1    23
+#define p_ph_thr   24
+#define p_ph_scale 25
+#define p_ph_steep 26
 
 double min(double x, double y) { return(x<y ? x : y); }
 double max(double x, double y) { return(x>y ? x : y); }
 
-#define fundev2(T,T0,T1,M0,M1,Ts) ((M0)+(M1)/(1.0+exp((Ts)*((T0)+(T1)-(T))*((T)-(T0)))))
-#define fundev(T,Tm,Ts,Mx,Mn) ((Mn)+((Mx)-(Mn))/(1.0+exp((Ts)*((Tm)-(T)))))
-#define fun(T,Tm,Ts) (max(0.0,min(1.0,((Tm) + (Ts)*(20.0-(T))))))
-#define fixed(T,Mx) (Mx)
+#define funmort(T,Tm,a,c) (max(0.0,min(1.0, exp(a)*(pow((T)-(Tm),4.0)) + (c))))
+
+#define briere1C(T,T0,T1,a) ( (T) <= (T0) ? 1e13 : ( (T) >= (T1) ? 1e13 : min(1e13, max(1.0, 1.0/(exp(a)*(T)*((T)-(T0))*sqrt((T1)-(T))) ) ) ))
+#define briere1(T,T0,T1,a) (briere1C(273.15+(T),273.15+(T0),273.15+(T1),(a)))
+
 #define funphoto(P,PT,PS,S) (1.0 + ((PS)/(1.0 + exp((S)*((P)-(PT))))))
 
 void f_ph(double ph, double *p, double *m) {
@@ -60,54 +47,42 @@ void f_ph(double ph, double *p, double *m) {
 }
 
 void f_p1(double x, double ph, double *p, double *m) {
-    *m = fundev2(x,
+    *m = funmort(x,
                  p[p_p1_1],
                  p[p_p1_2],
-                 p[p_p1_3],
-                 p[p_p1_4],
-                 p[p_p1_5]);
+                 p[p_p1_3]);
 }
 void f_p2(double x, double ph, double *p, double *m) {
-    *m = fundev2(x,
+    *m = funmort(x,
                  p[p_p2_1],
                  p[p_p2_2],
-                 p[p_p2_3],
-                 p[p_p2_4],
-                 p[p_p2_5]);
+                 p[p_p2_3]);
 }
 void f_p3(double x, double ph, double *p, double *m) {
-    *m = fundev2(x,
+    *m = funmort(x,
                  p[p_p3_1],
                  p[p_p3_2],
-                 p[p_p3_3],
-                 p[p_p3_4],
-                 p[p_p3_5]);
+                 p[p_p3_3]);
 }
 void f_p4(double x, double ph, double *p, double *m) {
-    *m = fundev2(x,
+    *m = funmort(x,
                  p[p_p4_1],
                  p[p_p4_2],
-                 p[p_p4_3],
-                 p[p_p4_4],
-                 p[p_p4_5]);
+                 p[p_p4_3]);
 }
 void f_d1ms(double x, double ph, double *p, double *m, double *s) {
-    *m = fundev2(x,
+    *m = briere1(x,
                  p[p_d1m_1],
                  p[p_d1m_2],
-                 p[p_d1m_3],
-                 p[p_d1m_4],
-                 p[p_d1m_5]);
+                 p[p_d1m_3]);
     *s = p[p_d1s_1] * (*m);
 }
 void f_d2ms(double x, double ph, double *p, double *m, double *s) {
-    *m = fundev2(x,
+    *m = briere1(x,
                  p[p_d2m_1],
                  p[p_d2m_2],
-                 p[p_d2m_3],
-                 p[p_d2m_4],
-                 p[p_d2m_5]);
-    if ((p[p_ph_thr] > 0) & (p[p_ph_scale] > 0)) {
+                 p[p_d2m_3]);
+    if ((p[p_ph_thr] > 0) & (p[p_ph_scale] > 0) & (p[p_ph_steep] > 0)) {
         double scl;
         f_ph(ph,p,&scl);
         *m *= scl;
@@ -115,12 +90,10 @@ void f_d2ms(double x, double ph, double *p, double *m, double *s) {
     *s = p[p_d2s_1] * (*m);
 }
 void f_d3ms(double x, double ph, double *p, double *m, double *s) {
-    *m = fundev2(x,
+    *m = briere1(x,
                  p[p_d3m_1],
                  p[p_d3m_2],
-                 p[p_d3m_3],
-                 p[p_d3m_4],
-                 p[p_d3m_5]);
+                 p[p_d3m_3]);
     *s = p[p_d3s_1] * (*m);
 }
 
