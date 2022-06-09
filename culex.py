@@ -17,7 +17,7 @@ for index, row in dat.iterrows():
             'L':[],
             'P':[],
             'A':[],
-            'type':'CN0w',
+            'type':'CN0wP',
             'compare':['P','A']
         }
     obs[key]['days'].append(row[2])

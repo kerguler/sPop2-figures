@@ -5,9 +5,7 @@ FSCALE = numpy.int64(24 / TSCALE)
 # -------------------------------------------------------------------------------
 
 from datetime import datetime, timedelta, date
-#str2date2 = lambda x: datetime.strptime(x, '%d/%m/%Y') + timedelta(days=8.0/24.0)
 str2date2 = lambda x: datetime.strptime(x, '%d/%m/%Y') + timedelta(days=6.0/24.0)
-#str2date2 = lambda x: datetime.strptime(x, '%d/%m/%Y') + timedelta(days=0.5)
 str2date3 = lambda x: datetime.strptime(x, '%m/%d/%Y %H:%M:%S')
 
 # ../data/vtemp/pet2017_temperature_v2/pet2017_temp_hourly.csv
